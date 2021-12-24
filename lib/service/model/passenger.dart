@@ -7,8 +7,8 @@ part 'passenger.g.dart';
 class Passenger {
   @JsonKey(name: '_id')
   final String id;
-  final String name;
-  final int trips;
+  final String? name;
+  final int? trips;
   final List<Airline> airline;
 
   Passenger({

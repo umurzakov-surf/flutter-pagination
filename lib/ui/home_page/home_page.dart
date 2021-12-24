@@ -2,31 +2,56 @@ import 'package:elementary/elementary.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pagination/service/model/passenger.dart';
 import 'package:flutter_pagination/ui/home_page/home_page_wm.dart';
-import 'package:flutter_pagination/ui/home_page/widgets/passenger_tile.dart';
+import 'package:flutter_pagination/ui/home_page/widgets/passengers_list.dart';
 
 class HomePage extends ElementaryWidget<HomePageWM> {
   const HomePage({Key? key}) : super(homePageWMFactory, key: key);
 
   @override
   Widget build(HomePageWM wm) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Pagination App'),
-      ),
-      body: EntityStateNotifierBuilder<List<Passenger>>(
-        listenableEntityState: wm.passengersState,
-        builder: (_, passengers) {
-          if(passengers == null) {
-            return const Text('error');
-          }
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Pagination App'),
+        ),
+        body: Column(
+          children: [
+            Expanded(
+              child: EntityStateNotifierBuilder<List<Passenger>>(
+                listenableEntityState: wm.passengersState,
+                loadingBuilder: (_, passengers) {
+                  return PassengersList(
+                    scrollController: wm.scrollController,
+                    passengers: passengers?? [],
+                  );
+                },
+                builder: (_, passengers) {
+                  if (passengers == null) {
+                    return const Text('error');
+                  }
 
-          return ListView.builder(
-            itemCount: passengers.length,
-            itemBuilder: (_, index) {
-              return PassengerTile(passenger: passengers[index]);
-            },
-          );
-        },
+                  return PassengersList(
+                    scrollController: wm.scrollController,
+                    passengers: passengers,
+                  );
+                },
+              ),
+            ),
+            EntityStateNotifierBuilder<List<Passenger>>(
+              listenableEntityState: wm.passengersState,
+              loadingBuilder: (_, __) {
+                return Container(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  alignment: Alignment.center,
+                  child: const CircularProgressIndicator(),
+                );
+              },
+              builder: (_, __) {
+                return const SizedBox();
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

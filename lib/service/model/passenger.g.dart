@@ -8,8 +8,8 @@ part of 'passenger.dart';
 
 Passenger _$PassengerFromJson(Map<String, dynamic> json) => Passenger(
       id: json['_id'] as String,
-      name: json['name'] as String,
-      trips: json['trips'] as int,
+      name: json['name'] as String?,
+      trips: json['trips'] as int?,
       airline: (json['airline'] as List<dynamic>)
           .map((e) => Airline.fromJson(e as Map<String, dynamic>))
           .toList(),
