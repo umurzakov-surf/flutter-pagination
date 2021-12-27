@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:elementary/elementary.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pagination/service/model/passenger.dart';
@@ -28,10 +29,14 @@ class HomePageWM extends WidgetModel<HomePage, HomePageModel> {
   }
 
   Future<void> _loadPassengers() async {
-    final _previousData = _passengersState.value?.data?? [];
-    _passengersState.loading(_previousData);
-    final passengers = await model.getPassengers(_currentPage);
-    _passengersState.content([..._previousData, ...passengers]);
+    try {
+      final _previousData = _passengersState.value?.data?? [];
+      _passengersState.loading(_previousData);
+      final passengers = await model.getPassengers(_currentPage);
+      _passengersState.content([..._previousData, ...passengers]);
+    } on DioError catch (err) {
+      _passengersState.error(err);
+    }
   }
 
   void _scrollListener() {
